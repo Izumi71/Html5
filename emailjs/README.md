@@ -1,6 +1,6 @@
 # Envío de correos con EmailJS
 
-Aplicación web (HTML5, CSS3 y JavaScript) que permite ingresar datos en un formulario, validarlos y enviar un mensaje de confirmación/notificación al correo personal o institucional del estudiante mediante [EmailJS](https://www.emailjs.com/).
+Aplicación web (HTML5, CSS3, JavaScript y Bootstrap 5) que permite ingresar datos en un formulario, validarlos y enviar un mensaje de confirmación/notificación al correo personal o institucional del estudiante mediante [EmailJS](https://www.emailjs.com/).
 
 ## Funcionalidades
 - Formulario con nombre, correo, asunto y mensaje.

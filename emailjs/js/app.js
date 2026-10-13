@@ -1,8 +1,11 @@
 (function () {
   const form = document.getElementById("emailForm");
   const btn = document.getElementById("btnEnviar");
-  const toast = document.getElementById("toast");
+  const btnLimpiar = document.getElementById("btnLimpiar");
   const contador = document.getElementById("contador");
+  const toastEl = document.getElementById("toast");
+  const toastText = document.getElementById("toastText");
+  const toastIcon = document.getElementById("toastIcon");
   const fields = {
     nombre: document.getElementById("nombre"),
     correo: document.getElementById("correo"),
@@ -41,9 +44,9 @@
   function validateField(name) {
     const input = fields[name];
     const msg = validators[name](input.value.trim());
-    document.querySelector(`[data-error-for="${name}"]`).textContent = msg;
-    input.classList.toggle("invalid", !!msg);
-    input.classList.toggle("valid", !msg);
+    document.getElementById(`${name}-error`).textContent = msg;
+    input.classList.toggle("is-invalid", !!msg);
+    input.classList.toggle("is-valid", !msg);
     return !msg;
   }
 
@@ -51,18 +54,30 @@
     return Object.keys(fields).map(validateField).every(Boolean);
   }
 
-  let toastTimer;
+  function clearValidation() {
+    Object.values(fields).forEach(f => f.classList.remove("is-valid", "is-invalid"));
+    contador.textContent = "0";
+  }
+
   function showToast(text, type) {
-    clearTimeout(toastTimer);
-    toast.textContent = text;
-    toast.className = `toast show ${type}`;
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 5000);
+    const ok = type === "success";
+    toastEl.classList.remove("text-bg-success", "text-bg-danger");
+    toastEl.classList.add(ok ? "text-bg-success" : "text-bg-danger");
+    toastIcon.className = `bi fs-5 ${ok ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill"}`;
+    toastText.textContent = text;
+    if (typeof bootstrap !== "undefined") {
+      bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 5000 }).show();
+    } else {
+      alert(text);
+    }
   }
 
   function setLoading(loading) {
     btn.disabled = loading;
+    btnLimpiar.disabled = loading;
     Object.values(fields).forEach(f => { f.disabled = loading; });
-    btn.classList.toggle("loading", loading);
+    btn.querySelector(".spinner-border").classList.toggle("d-none", !loading);
+    btn.querySelector(".btn-icon").classList.toggle("d-none", loading);
     btn.querySelector(".btn-text").textContent = loading ? "Enviando..." : "Enviar correo";
   }
 
@@ -71,10 +86,14 @@
       Object.values(EMAILJS_CONFIG).every(v => v && !v.startsWith("TU_"));
   }
 
+  function isLibraryLoaded() {
+    return typeof emailjs !== "undefined";
+  }
+
   Object.keys(fields).forEach(name => {
     fields[name].addEventListener("blur", () => validateField(name));
     fields[name].addEventListener("input", () => {
-      if (fields[name].classList.contains("invalid")) validateField(name);
+      if (fields[name].classList.contains("is-invalid")) validateField(name);
     });
   });
 
@@ -82,9 +101,7 @@
     contador.textContent = fields.mensaje.value.length;
   });
 
-  function isLibraryLoaded() {
-    return typeof emailjs !== "undefined";
-  }
+  form.addEventListener("reset", clearValidation);
 
   if (isConfigured() && isLibraryLoaded()) {
     emailjs.init({ publicKey: EMAILJS_CONFIG.PUBLIC_KEY });
@@ -94,15 +111,15 @@
     e.preventDefault();
 
     if (!validateForm()) {
-      showToast("⚠ Revisa los campos marcados en rojo.", "error");
+      showToast("Revisa los campos marcados en rojo.", "error");
       return;
     }
     if (!isConfigured()) {
-      showToast("✖ EmailJS no está configurado. Edita js/config.js.", "error");
+      showToast("EmailJS no está configurado. Edita js/config.js.", "error");
       return;
     }
     if (!isLibraryLoaded()) {
-      showToast("✖ No se pudo cargar la librería de EmailJS. Revisa tu conexión.", "error");
+      showToast("No se pudo cargar la librería de EmailJS. Revisa tu conexión.", "error");
       return;
     }
 
@@ -117,14 +134,12 @@
     setLoading(true);
     try {
       await emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, params);
-      showToast(`✔ Correo enviado correctamente a ${params.to_email}`, "success");
+      showToast(`Correo enviado correctamente a ${params.to_email}`, "success");
       form.reset();
-      contador.textContent = "0";
-      Object.values(fields).forEach(f => f.classList.remove("valid", "invalid"));
     } catch (err) {
       console.error("Error EmailJS:", err);
       const detalle = err && (err.text || err.message) ? `: ${err.text || err.message}` : "";
-      showToast(`✖ No se pudo enviar el correo${detalle}`, "error");
+      showToast(`No se pudo enviar el correo${detalle}`, "error");
     } finally {
       setLoading(false);
     }

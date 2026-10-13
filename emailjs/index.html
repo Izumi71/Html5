@@ -3,65 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notificaciones con EmailJS</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>Centro de Notificaciones · EmailJS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
-<body>
-  <header class="header">
-    <h1>&lt;EnvíaCorreo /&gt;</h1>
-    <p>Evaluación – Desarrollo Web Full Stack · Integración con EmailJS</p>
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-brand shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="#">
+        <i class="bi bi-envelope-paper-fill"></i> Centro de Notificaciones
+      </a>
+      <span class="navbar-text small d-none d-md-inline">Desarrollo Web Full Stack · UNDC</span>
+    </div>
+  </nav>
+
+  <header class="hero text-white">
+    <div class="container py-5">
+      <span class="badge rounded-pill bg-light text-brand mb-3"><i class="bi bi-lightning-charge-fill"></i> Integración con EmailJS</span>
+      <h1 class="display-6 fw-bold mb-2">Envío de correos de confirmación</h1>
+      <p class="lead mb-0 opacity-75">Completa el formulario para enviar una notificación a tu correo personal o institucional.</p>
+    </div>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <h2>Formulario de notificación</h2>
-      <p class="subtitle">Completa los datos y se enviará un mensaje de confirmación al correo indicado.</p>
-
-      <form id="emailForm" novalidate>
-        <div class="field">
-          <label for="nombre">Nombre completo *</label>
-          <input type="text" id="nombre" name="nombre" placeholder="Ej. Valery Pérez" autocomplete="name">
-          <small class="error" data-error-for="nombre"></small>
-        </div>
-
-        <div class="field">
-          <label for="correo">Correo electrónico (personal o institucional) *</label>
-          <input type="email" id="correo" name="correo" placeholder="codigo@undc.edu.pe" autocomplete="email">
-          <small class="error" data-error-for="correo"></small>
-        </div>
-
-        <div class="field">
-          <label for="asunto">Asunto *</label>
-          <input type="text" id="asunto" name="asunto" placeholder="Ej. Confirmación de registro" maxlength="100">
-          <small class="error" data-error-for="asunto"></small>
-        </div>
-
-        <div class="field">
-          <label for="mensaje">Mensaje *</label>
-          <textarea id="mensaje" name="mensaje" rows="5" maxlength="1000" placeholder="Escribe tu mensaje (mínimo 10 caracteres)"></textarea>
-          <div class="field-footer">
-            <small class="error" data-error-for="mensaje"></small>
-            <small class="counter"><span id="contador">0</span>/1000</small>
+  <main class="container flex-grow-1 main-content">
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="card border-0 shadow">
+          <div class="card-header bg-white border-0 pt-4 px-4">
+            <h2 class="h5 fw-semibold mb-1"><i class="bi bi-pencil-square text-brand me-2"></i>Datos del mensaje</h2>
+            <p class="text-body-secondary small mb-0">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+          </div>
+          <div class="card-body p-4">
+            <form id="emailForm" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="nombre" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej. Valery Pérez" autocomplete="name">
+                    <div class="invalid-feedback" id="nombre-error"></div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="correo" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="bi bi-at"></i></span>
+                    <input type="email" class="form-control" id="correo" name="correo" placeholder="codigo@undc.edu.pe" autocomplete="email">
+                    <div class="invalid-feedback" id="correo-error"></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label for="asunto" class="form-label">Asunto <span class="text-danger">*</span></label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                    <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ej. Confirmación de registro" maxlength="100">
+                    <div class="invalid-feedback" id="asunto-error"></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label for="mensaje" class="form-label">Mensaje <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="mensaje" name="mensaje" rows="5" maxlength="1000" placeholder="Escribe tu mensaje (mínimo 10 caracteres)"></textarea>
+                  <div class="invalid-feedback" id="mensaje-error"></div>
+                  <div class="form-text text-end"><span id="contador">0</span>/1000</div>
+                </div>
+                <div class="col-12 d-flex flex-column flex-sm-row gap-2 justify-content-end">
+                  <button type="reset" id="btnLimpiar" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Limpiar
+                  </button>
+                  <button type="submit" id="btnEnviar" class="btn btn-brand px-4">
+                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
+                    <i class="bi bi-send-fill me-1 btn-icon"></i>
+                    <span class="btn-text">Enviar correo</span>
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
+      </div>
 
-        <button type="submit" id="btnEnviar" class="btn">
-          <span class="btn-text">Enviar correo</span>
-          <span class="spinner" aria-hidden="true"></span>
-        </button>
-      </form>
-    </section>
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h3 class="h6 fw-semibold mb-3"><i class="bi bi-info-circle text-brand me-2"></i>¿Cómo funciona?</h3>
+            <ol class="list-unstyled steps mb-0">
+              <li><span class="step-num">1</span> Ingresa tus datos y el mensaje.</li>
+              <li><span class="step-num">2</span> Se validan los campos antes del envío.</li>
+              <li><span class="step-num">3</span> EmailJS envía el correo usando la plantilla configurada.</li>
+              <li><span class="step-num">4</span> Recibes una notificación con el resultado.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="h6 fw-semibold mb-3"><i class="bi bi-braces text-brand me-2"></i>Parámetros de la plantilla</h3>
+            <ul class="list-group list-group-flush small">
+              <li class="list-group-item d-flex justify-content-between px-0"><code>to_name</code><span class="text-body-secondary">Nombre</span></li>
+              <li class="list-group-item d-flex justify-content-between px-0"><code>to_email</code><span class="text-body-secondary">Correo destino</span></li>
+              <li class="list-group-item d-flex justify-content-between px-0"><code>subject</code><span class="text-body-secondary">Asunto</span></li>
+              <li class="list-group-item d-flex justify-content-between px-0"><code>message</code><span class="text-body-secondary">Mensaje</span></li>
+              <li class="list-group-item d-flex justify-content-between px-0"><code>fecha</code><span class="text-body-secondary">Fecha de envío</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-  <footer class="footer">
-    <p>Desarrollado con HTML5, CSS3, JavaScript y EmailJS</p>
+  <footer class="border-top bg-white mt-5">
+    <div class="container py-3 d-flex flex-column flex-md-row justify-content-between small text-body-secondary">
+      <span>&copy; 2026 · Evaluación Desarrollo Web Full Stack</span>
+      <span>HTML5 · CSS3 · JavaScript · Bootstrap 5 · EmailJS</span>
+    </div>
   </footer>
 
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="toast" class="toast align-items-center border-0" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i id="toastIcon" class="bi fs-5"></i>
+          <span id="toastText"></span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
 </body>
