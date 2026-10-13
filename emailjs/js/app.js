@@ -11,13 +11,14 @@
   };
 
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  const NOMBRE_REGEX = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/;
+  const NOMBRE_REGEX = /^[\p{L}\p{M}\s'-]+$/u;
 
   const validators = {
     nombre(v) {
+      v = v.normalize("NFC");
       if (!v) return "El nombre es obligatorio.";
       if (v.length < 3) return "El nombre debe tener al menos 3 caracteres.";
-      if (!NOMBRE_REGEX.test(v)) return "El nombre solo puede contener letras y espacios.";
+      if (!NOMBRE_REGEX.test(v)) return "El nombre solo puede contener letras, espacios, apóstrofes y guiones.";
       return "";
     },
     correo(v) {
@@ -60,6 +61,7 @@
 
   function setLoading(loading) {
     btn.disabled = loading;
+    Object.values(fields).forEach(f => { f.disabled = loading; });
     btn.classList.toggle("loading", loading);
     btn.querySelector(".btn-text").textContent = loading ? "Enviando..." : "Enviar correo";
   }
@@ -80,7 +82,11 @@
     contador.textContent = fields.mensaje.value.length;
   });
 
-  if (isConfigured()) {
+  function isLibraryLoaded() {
+    return typeof emailjs !== "undefined";
+  }
+
+  if (isConfigured() && isLibraryLoaded()) {
     emailjs.init({ publicKey: EMAILJS_CONFIG.PUBLIC_KEY });
   }
 
@@ -93,6 +99,10 @@
     }
     if (!isConfigured()) {
       showToast("✖ EmailJS no está configurado. Edita js/config.js.", "error");
+      return;
+    }
+    if (!isLibraryLoaded()) {
+      showToast("✖ No se pudo cargar la librería de EmailJS. Revisa tu conexión.", "error");
       return;
     }
 

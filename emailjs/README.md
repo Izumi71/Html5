@@ -45,3 +45,9 @@ Aplicación web (HTML5, CSS3 y JavaScript) que permite ingresar datos en un form
 
 ## Ejecución
 Abrir `index.html` en el navegador o usar un servidor local (por ejemplo, la extensión *Live Server* de VS Code o `python3 -m http.server`).
+
+## Seguridad
+La Public Key es visible en el navegador, por lo que cualquiera podría usar el formulario para enviar correos. Para evitar abusos, en el dashboard de EmailJS (**Account → Security**):
+- Activar **Allowed origins / domains** y agregar solo el dominio donde se publica la app.
+- Configurar **Rate limits** (p. ej. 1 solicitud cada 10 segundos).
+- Opcionalmente activar **CAPTCHA** en la plantilla.
