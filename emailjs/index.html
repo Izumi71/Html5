@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones con EmailJS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1>&lt;EnvíaCorreo /&gt;</h1>
+    <p>Evaluación – Desarrollo Web Full Stack · Integración con EmailJS</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Formulario de notificación</h2>
+      <p class="subtitle">Completa los datos y se enviará un mensaje de confirmación al correo indicado.</p>
+
+      <form id="emailForm" novalidate>
+        <div class="field">
+          <label for="nombre">Nombre completo *</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Ej. Valery Pérez" autocomplete="name">
+          <small class="error" data-error-for="nombre"></small>
+        </div>
+
+        <div class="field">
+          <label for="correo">Correo electrónico (personal o institucional) *</label>
+          <input type="email" id="correo" name="correo" placeholder="codigo@undc.edu.pe" autocomplete="email">
+          <small class="error" data-error-for="correo"></small>
+        </div>
+
+        <div class="field">
+          <label for="asunto">Asunto *</label>
+          <input type="text" id="asunto" name="asunto" placeholder="Ej. Confirmación de registro" maxlength="100">
+          <small class="error" data-error-for="asunto"></small>
+        </div>
+
+        <div class="field">
+          <label for="mensaje">Mensaje *</label>
+          <textarea id="mensaje" name="mensaje" rows="5" maxlength="1000" placeholder="Escribe tu mensaje (mínimo 10 caracteres)"></textarea>
+          <div class="field-footer">
+            <small class="error" data-error-for="mensaje"></small>
+            <small class="counter"><span id="contador">0</span>/1000</small>
+          </div>
+        </div>
+
+        <button type="submit" id="btnEnviar" class="btn">
+          <span class="btn-text">Enviar correo</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <p>Desarrollado con HTML5, CSS3, JavaScript y EmailJS</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
